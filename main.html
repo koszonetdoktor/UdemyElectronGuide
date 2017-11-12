@@ -1,5 +1,23 @@
 <head>
 </head>
 <body>
-  <h1>My todos</h1>
+  <h1>My todos, relaod test</h1>
+  <ul></ul>
+  <script>
+      const electron = require('electron')
+      const { ipcRenderer } = electron
+
+      ipcRenderer.on('todo:add', (event, todo) => {
+          const li = document.createElement('li')
+          const text = document.createTextNode(todo)
+          console.log("caught the todo:add in render")
+          li.appendChild(text)
+          document.querySelector('ul').appendChild(li)
+      })
+
+      ipcRenderer.on('clear:todo', (event) => {
+        console.log("got clear todods event", event)
+        document.querySelector('ul').innerHTML = ""
+      })
+  </script>
 </body>

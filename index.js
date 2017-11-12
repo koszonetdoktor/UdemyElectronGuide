@@ -23,7 +23,19 @@ function createAddWindow() {
     title: 'Add New Todo'
   })
   addWindow.loadURL(`file://${__dirname}/add.html`)
+  addWindow.on('closed', () => addWindow = null) // garbage collection !!
 }
+
+function clearTodos() {
+  mainWindow.webContents.send('clear:todo')
+}
+
+const { ipcMain } = electron
+ipcMain.on('todo:add', (event, todo) => {
+  mainWindow.webContents.send('todo:add', todo)
+  console.log("get the render msg: ", todo)
+  addWindow.close()
+})
 
 const menuTemplate = [
    {
@@ -33,6 +45,12 @@ const menuTemplate = [
          label: 'New Todo',
          click() {
            createAddWindow()
+         }
+       },
+       {
+         label: 'Clear Todos',
+         click() {
+           clearTodos()
          }
        },
        { label: 'Settings' },
@@ -51,6 +69,7 @@ if(process.env.NODE_ENV  !== 'production') {
   menuTemplate.push({
     label: 'DEVELOPER',
     submenu: [
+      { role: 'reload' },
       {
         label: 'Toggle Developer Tools',
         accelerator: process.platform === 'darwin' ? 'Command+D' : 'Ctrl+D',
