@@ -21,9 +21,22 @@ app.on('ready', () => {
   tray = new Tray(iconPath)
   tray.on('click', (event, bounds) => {
     console.log(bounds)
+
+    //Click event bounds
+    const  {x, y} = bounds
+    //Window height and width
+    const {height, width} = mainWindow.getBounds()
+
+
     if(mainWindow.isVisible()) {
       mainWindow.hide()
     } else {
+      mainWindow.setBounds({
+        x: x - width / 2,
+        y,
+        height,
+        width
+      })
       mainWindow.show()
       //mainWindow.
     }
